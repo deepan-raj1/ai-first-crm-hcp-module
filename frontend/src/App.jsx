@@ -1,8 +1,8 @@
 function App() {
   return (
     <div>
-      <h1>AI First CRM - HCP Module</h1>
-      <p>React Setup Successful 🚀</p>
+      <h1>AI-First CRM HCP Module</h1>
+      <p>Project setup completed successfully.</p>
     </div>
   );
 }
