@@ -1,10 +1,7 @@
+import Dashboard from "./pages/Dashboard";
+
 function App() {
-  return (
-    <div>
-      <h1>AI-First CRM HCP Module</h1>
-      <p>Project setup completed successfully.</p>
-    </div>
-  );
+  return <Dashboard />;
 }
 
 export default App;
