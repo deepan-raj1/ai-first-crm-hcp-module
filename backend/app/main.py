@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database.connection import engine
 from app.database.base import Base
 from app.routers.interaction import router as interaction_router
+from app.routers.ai import router as ai_router
+
 
 
 # Create all database tables
@@ -26,7 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(interaction_router)
-
+app.include_router(ai_router)
 
 @app.get("/")
 def home():
