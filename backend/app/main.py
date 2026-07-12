@@ -1,5 +1,11 @@
 from fastapi import FastAPI
 
+from app.database.connection import engine
+from app.database.base import Base
+
+# Create all database tables
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="AI-First CRM HCP Module API",
     description="Backend API for AI-First CRM using FastAPI, LangGraph and Groq",
