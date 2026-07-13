@@ -1,17 +1,49 @@
 from langchain_core.tools import tool
 
-from app.services.ai_service import extract_interaction
+from app.database.connection import SessionLocal
+from app.schemas.interaction import InteractionCreate
+from app.services.ai_service import (
+    extract_interaction,
+    normalize_interaction_data,
+)
+from app.services.interaction_service import create_interaction
 
 
 @tool
-def log_interaction(user_input: str) -> dict:
+def log_interaction(user_input: str):
     """
-    Extract structured CRM interaction details from natural language.
+    Extract CRM interaction details using AI
+    and save them into PostgreSQL.
     """
 
     data = extract_interaction(user_input)
 
-    return data
+    data = normalize_interaction_data(data)
+
+    db = SessionLocal()
+
+    try:
+        interaction = InteractionCreate(**data)
+
+        saved = create_interaction(db, interaction)
+
+        return {
+            "status": "success",
+            "id": saved.id,
+            "hcp_name": saved.hcp_name,
+            "message": "Interaction saved successfully.",
+            "interaction": data,
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+    finally:
+        db.close()
+
 
 @tool
 def edit_interaction(interaction_id: int, updated_data: str) -> str:
