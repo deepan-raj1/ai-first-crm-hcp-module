@@ -195,3 +195,25 @@ User:
     content = content.strip()
 
     return json.loads(content)
+
+
+def summarize_text(interaction_text: str) -> str:
+    """
+    Generate a professional CRM summary.
+    """
+
+    prompt = f"""
+You are an AI assistant for a Pharmaceutical CRM.
+
+Summarize the following interaction into a concise professional CRM note.
+
+Keep it between 40 and 80 words.
+
+Interaction:
+
+{interaction_text}
+"""
+
+    response = llm.invoke(prompt)
+
+    return response.content.strip()

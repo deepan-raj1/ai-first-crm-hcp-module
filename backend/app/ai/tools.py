@@ -6,6 +6,7 @@ from app.services.ai_service import (
     extract_interaction,
     normalize_interaction_data,
     extract_update_data,
+    summarize_text,
 )
 from app.services.interaction_service import (create_interaction, update_interaction, get_interactions_by_hcp,)
 
@@ -124,12 +125,17 @@ def get_interaction_history(hcp_name: str):
         db.close()
 
 @tool
-def summarize_interaction(interaction_text: str) -> str:
+def summarize_interaction(interaction_text: str):
     """
-    Generate a professional summary.
+    Generate a professional CRM summary.
     """
-    return f"Summary: {interaction_text}"
 
+    summary = summarize_text(interaction_text)
+
+    return {
+        "status": "success",
+        "summary": summary,
+    }
 
 @tool
 def recommend_follow_up(summary: str) -> str:
