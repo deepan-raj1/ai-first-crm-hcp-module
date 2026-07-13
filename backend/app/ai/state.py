@@ -20,3 +20,5 @@ class AgentState(TypedDict):
 
     # Final response
     response: str
+
+    llm_response: Any

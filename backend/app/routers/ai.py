@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from app.ai.graph import crm_graph
+from app.services.router_service import decide_tool
+from app.services.tool_executor import execute_tool
 
 router = APIRouter(
     prefix="/api/ai",
@@ -10,16 +11,13 @@ router = APIRouter(
 
 @router.post("/chat")
 def chat(payload: dict):
-    state = {
-        "user_input": payload["message"],
-        "tool_name": None,
-        "interaction_data": {},
-        "messages": [],
-        "response": "",
-    }
+    user_input = payload["message"]
 
-    result = crm_graph.invoke(state)
+    decision = decide_tool(user_input)
 
-    return {
-        "response": result["response"]
-    }
+    result = execute_tool(
+        decision["tool"],
+        decision["arguments"],
+    )
+
+    return result

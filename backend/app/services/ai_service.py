@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from urllib import response
 
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
@@ -71,18 +72,46 @@ User Input:
 {user_input}
 """
 
+    # response = llm.invoke(prompt)
+
+    # # print("\n========== RAW LLM RESPONSE ==========")
+    # # print(response.content)
+    # # print("======================================\n")
+
+    # content = response.content.strip()
+
+    # # Remove Markdown code block if present
+    # if content.startswith("```json"):
+    #     content = content.replace("```json", "", 1)
+
+    # if content.endswith("```"):
+    #     content = content[:-3]
+
+    # content = content.strip()
+
+    # return json.loads(content)
+
     response = llm.invoke(prompt)
 
     content = response.content.strip()
 
-    # Remove Markdown code block if present
-    if content.startswith("```json"):
-        content = content.replace("```json", "", 1)
+    print("========== RAW LLM RESPONSE ==========")
+    print(content)
+    print("======================================")
 
-    if content.endswith("```"):
-        content = content[:-3]
-
+    # Remove markdown fences
+    content = content.replace("```json", "")
+    content = content.replace("```", "")
     content = content.strip()
+
+    # Extract JSON object even if extra text exists
+    start = content.find("{")
+    end = content.rfind("}")
+
+    if start == -1 or end == -1:
+        raise ValueError(f"No JSON found in LLM response:\n{content}")
+
+    content = content[start:end + 1]
 
     return json.loads(content)
 
