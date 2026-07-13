@@ -7,7 +7,7 @@ from app.services.ai_service import (
     normalize_interaction_data,
     extract_update_data,
 )
-from app.services.interaction_service import (create_interaction, update_interaction,)
+from app.services.interaction_service import (create_interaction, update_interaction, get_interactions_by_hcp,)
 
 
 @tool
@@ -86,12 +86,42 @@ def edit_interaction(interaction_id: int, user_input: str):
         db.close()
 
 @tool
-def get_interaction_history(hcp_name: str) -> str:
+def get_interaction_history(hcp_name: str):
     """
-    Retrieve interaction history for an HCP.
+    Retrieve interaction history for a Healthcare Professional.
     """
-    return f"Retrieved interaction history for {hcp_name}."
 
+    db = SessionLocal()
+
+    try:
+        interactions = get_interactions_by_hcp(db, hcp_name)
+
+        if not interactions:
+            return {
+                "status": "error",
+                "message": f"No interactions found for {hcp_name}."
+            }
+
+        result = []
+
+        for interaction in interactions:
+            result.append({
+                "id": interaction.id,
+                "hcp_name": interaction.hcp_name,
+                "interaction_type": interaction.interaction_type,
+                "date": str(interaction.date),
+                "summary": interaction.summary,
+                "sentiment": interaction.sentiment,
+            })
+
+        return {
+            "status": "success",
+            "count": len(result),
+            "interactions": result,
+        }
+
+    finally:
+        db.close()
 
 @tool
 def summarize_interaction(interaction_text: str) -> str:

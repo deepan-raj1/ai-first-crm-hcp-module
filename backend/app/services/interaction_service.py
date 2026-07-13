@@ -66,3 +66,10 @@ def delete_interaction(db: Session, interaction_id: int):
 
     return db_interaction
 
+
+def get_interactions_by_hcp(db: Session, hcp_name: str):
+    return (
+        db.query(Interaction)
+        .filter(Interaction.hcp_name.ilike(f"%{hcp_name}%"))
+        .all()
+    )
