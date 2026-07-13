@@ -217,3 +217,29 @@ Interaction:
     response = llm.invoke(prompt)
 
     return response.content.strip()
+
+
+def recommend_next_action(summary: str) -> str:
+    """
+    Recommend the next best follow-up action.
+    """
+
+    prompt = f"""
+You are an AI assistant for a Pharmaceutical CRM.
+
+Based on the interaction summary below, recommend the next best action for the sales representative.
+
+Rules:
+- Keep the recommendation practical.
+- Limit it to 2–3 sentences.
+- Focus on strengthening the relationship with the HCP.
+
+Interaction Summary:
+
+{summary}
+"""
+
+    response = llm.invoke(prompt)
+
+    return response.content.strip()
+

@@ -7,6 +7,7 @@ from app.services.ai_service import (
     normalize_interaction_data,
     extract_update_data,
     summarize_text,
+    recommend_next_action
 )
 from app.services.interaction_service import (create_interaction, update_interaction, get_interactions_by_hcp,)
 
@@ -138,11 +139,14 @@ def summarize_interaction(interaction_text: str):
     }
 
 @tool
-def recommend_follow_up(summary: str) -> str:
+def recommend_follow_up(summary: str):
     """
-    Recommend next best action.
+    Recommend the next best follow-up action using AI.
     """
-    return (
-        "Recommended follow-up: "
-        "Schedule another visit within two weeks."
-    )
+
+    recommendation = recommend_next_action(summary)
+
+    return {
+        "status": "success",
+        "recommendation": recommendation,
+    }
