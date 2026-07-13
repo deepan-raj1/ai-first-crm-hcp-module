@@ -40,9 +40,24 @@ class InteractionCreate(InteractionBase):
 # Update Schema
 # ----------------------------
 
-class InteractionUpdate(InteractionBase):
-    pass
+class InteractionUpdate(BaseModel):
+    hcp_name: Optional[str] = None
+    interaction_type: Optional[str] = None
 
+    date: Optional[date] = None
+    time: Optional[time] = None
+
+    attendees: Optional[str] = None
+    topics_discussed: Optional[str] = None
+    materials_shared: Optional[str] = None
+    samples_distributed: Optional[str] = None
+
+    sentiment: Optional[str] = None
+
+    outcome: Optional[str] = None
+    follow_up_actions: Optional[str] = None
+
+    summary: Optional[str] = None
 
 # ----------------------------
 # Response Schema

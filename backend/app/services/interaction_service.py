@@ -40,7 +40,7 @@ def update_interaction(
     if not db_interaction:
         return None
 
-    update_data = interaction.model_dump()
+    update_data = interaction.model_dump(exclude_unset=True)
 
     for key, value in update_data.items():
         setattr(db_interaction, key, value)
@@ -65,3 +65,4 @@ def delete_interaction(db: Session, interaction_id: int):
     db.commit()
 
     return db_interaction
+

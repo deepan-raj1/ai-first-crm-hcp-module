@@ -131,3 +131,67 @@ def normalize_interaction_data(data: dict) -> dict:
             data[field] = ""
 
     return data
+
+
+def extract_update_data(user_input: str) -> dict:
+    """
+    Extract only the fields that need updating.
+    """
+
+    prompt = f"""
+You are an AI assistant for a Pharmaceutical CRM.
+
+The user wants to UPDATE an existing interaction.
+
+Return ONLY valid JSON.
+
+Return ONLY the fields that the user wants to modify.
+
+Use ONLY the following field names:
+
+hcp_name
+interaction_type
+date
+time
+attendees
+topics_discussed
+materials_shared
+samples_distributed
+sentiment
+outcome
+follow_up_actions
+summary
+
+Do NOT invent new field names.
+Do NOT include fields that are not being updated.
+
+Example:
+
+User:
+Change sentiment to Neutral.
+Follow-up after two weeks.
+
+Output:
+{{
+    "sentiment": "Neutral",
+    "follow_up_actions": "Follow-up after two weeks"
+}}
+
+User:
+
+{user_input}
+"""
+
+    response = llm.invoke(prompt)
+
+    content = response.content.strip()
+
+    if content.startswith("```json"):
+        content = content.replace("```json", "", 1)
+
+    if content.endswith("```"):
+        content = content[:-3]
+
+    content = content.strip()
+
+    return json.loads(content)

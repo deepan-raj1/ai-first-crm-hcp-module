@@ -1,12 +1,13 @@
 from langchain_core.tools import tool
 
 from app.database.connection import SessionLocal
-from app.schemas.interaction import InteractionCreate
+from app.schemas.interaction import (InteractionCreate, InteractionUpdate,)
 from app.services.ai_service import (
     extract_interaction,
     normalize_interaction_data,
+    extract_update_data,
 )
-from app.services.interaction_service import create_interaction
+from app.services.interaction_service import (create_interaction, update_interaction,)
 
 
 @tool
@@ -46,12 +47,43 @@ def log_interaction(user_input: str):
 
 
 @tool
-def edit_interaction(interaction_id: int, updated_data: str) -> str:
+def edit_interaction(interaction_id: int, user_input: str):
     """
-    Edit an existing interaction.
+    Update an existing interaction using AI.
     """
-    return f"Interaction {interaction_id} updated."
 
+    data = extract_update_data(user_input)
+
+    db = SessionLocal()
+
+    try:
+        interaction = update_interaction(
+            db,
+            interaction_id,
+            InteractionUpdate(**data)
+        )
+
+        if not interaction:
+            return {
+                "status": "error",
+                "message": "Interaction not found."
+            }
+
+        return {
+            "status": "success",
+            "id": interaction.id,
+            "message": "Interaction updated successfully.",
+            "updated_fields": data
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+    finally:
+        db.close()
 
 @tool
 def get_interaction_history(hcp_name: str) -> str:
