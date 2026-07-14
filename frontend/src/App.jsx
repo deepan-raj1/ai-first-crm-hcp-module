@@ -1,7 +1,7 @@
-import Dashboard from "./pages/Dashboard";
+import AIChat from "./pages/AIChat";
 
 function App() {
-  return <Dashboard />;
+  return <AIChat />;
 }
 
 export default App;
